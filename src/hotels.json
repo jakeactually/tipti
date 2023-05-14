@@ -1,0 +1,40 @@
+{
+    "hotels": [
+        {
+            "name": "Lakewood",
+            "rating": 3,
+            "weekday_rates": {
+                "regular_customer": 110,
+                "rewards_customer": 80
+            },
+            "weekend_rates": {
+                "regular_customer": 90,
+                "rewards_customer": 80
+            }
+        },
+        {
+            "name": "Bridgewood",
+            "rating": 4,
+            "weekday_rates": {
+                "regular_customer": 160,
+                "rewards_customer": 110
+            },
+            "weekend_rates": {
+                "regular_customer": 60,
+                "rewards_customer": 50
+            }
+        },
+        {
+            "name": "Ridgewood",
+            "rating": 5,
+            "weekday_rates": {
+                "regular_customer": 220,
+                "rewards_customer": 100
+            },
+            "weekend_rates": {
+                "regular_customer": 150,
+                "rewards_customer": 40
+            }
+        }
+    ]
+}
