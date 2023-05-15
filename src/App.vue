@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { format, eachDayOfInterval, parse, isWeekend } from 'date-fns';
+import { format, eachDayOfInterval, parse, isWeekend, differenceInDays } from 'date-fns';
 import * as _ from 'lodash';
 import HotelComponent from './components/HotelComponent.vue';
 import { hotels } from './hotels.json';
@@ -10,13 +10,23 @@ const fmt = 'yyyy-MM-dd';
 const from = ref(format(new Date(), fmt));
 const to = ref(format(new Date(), fmt));
 const type = ref('regular' as 'regular' | 'rewards');
+const error = ref('');
 
 const recommendation = computed(() => {
-  const days = eachDayOfInterval({
-    start: parse(from.value, fmt, new Date()),
-    end: parse(to.value, fmt, new Date())
-  });
-
+  const start = parse(from.value, fmt, new Date());
+  const end = parse(to.value, fmt, new Date());
+  const diff = differenceInDays(end, start);
+  if (diff > 100) {
+    error.value = 'The selected date range is too big';
+    return;
+  }
+  if (diff < 0) {
+    error.value = 'The selected date range is too low';
+    return;
+  }
+  
+  error.value =  '';
+  const days = eachDayOfInterval({ start, end });
   const data = hotels.map(hotel => {
     const prices = days.map(day => {
       const dayType = isWeekend(day) ? 'weekend' : 'weekday';
@@ -25,7 +35,6 @@ const recommendation = computed(() => {
     const price = _.sum(prices);
     return { hotel, price };
   });
-
   return _.minBy(data, item => item.price - item.hotel.rating);
 });
 </script>
@@ -48,9 +57,12 @@ const recommendation = computed(() => {
     </select>
     </label>
   </form>
-  
+
+  <div v-if="error">
+    <h2>{{error}}</h2>
+  </div>
+
   <div v-if="recommendation">
-    <h2>Recommended</h2>
     <Recommendation
       :hotel="recommendation.hotel"
       :from="from"
